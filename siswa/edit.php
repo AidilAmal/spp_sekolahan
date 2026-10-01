@@ -53,8 +53,10 @@ if(isset($_POST['update'])){
 
 <div class="mb-3">
 <label>NIS</label>
-<input class="form-control" name="nis" required
+<input class="form-control bg-light" name="nis" readonly
        value="<?= htmlspecialchars($siswa['nis']) ?>">
+<small class="text-muted">Tidak dapat diubah</small>
+</div>
 </div>
 
 <div class="mb-3">
