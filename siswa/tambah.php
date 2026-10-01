@@ -48,6 +48,25 @@ if(isset($_POST['simpan'])){
 $kelas = mysqli_query($koneksi, "SELECT * FROM tb_kelas");
 $spp   = mysqli_query($koneksi, "SELECT * FROM tb_spp");
 
+// Auto-generate NISN (format NIS-XXXX)
+$last_nisn = mysqli_fetch_assoc(mysqli_query($koneksi,
+    "SELECT nisn FROM tb_siswa ORDER BY nisn DESC LIMIT 1"));
+if($last_nisn){
+    preg_match('/\d+/', $last_nisn['nisn'], $m);
+    $next_nisn = 'NIS-' . str_pad(intval($m[0]) + 1, 4, '0', STR_PAD_LEFT);
+} else {
+    $next_nisn = 'NIS-0001';
+}
+
+// Auto-generate NIS (format 000001)
+$last_nis = mysqli_fetch_assoc(mysqli_query($koneksi,
+    "SELECT nis FROM tb_siswa ORDER BY nis DESC LIMIT 1"));
+if($last_nis){
+    $next_nis = str_pad(intval($last_nis['nis']) + 1, 6, '0', STR_PAD_LEFT);
+} else {
+    $next_nis = '000001';
+}
+
 ?>
 
 <?php include "../template/header.php"; ?>
@@ -64,12 +83,16 @@ $spp   = mysqli_query($koneksi, "SELECT * FROM tb_spp");
 
 <div class="mb-3">
 <label>NISN</label>
-<input type="text" name="nisn" class="form-control" required>
+<input type="text" name="nisn" class="form-control bg-light"
+       value="<?= $next_nisn ?>" readonly>
+<small class="text-muted">Digenerate otomatis</small>
 </div>
 
 <div class="mb-3">
 <label>NIS</label>
-<input type="text" name="nis" class="form-control" required>
+<input type="text" name="nis" class="form-control bg-light"
+       value="<?= $next_nis ?>" readonly>
+<small class="text-muted">Digenerate otomatis</small>
 </div>
 
 <div class="mb-3">
